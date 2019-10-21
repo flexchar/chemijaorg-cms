@@ -1,6 +1,6 @@
 export default {
     name: 'exam',
-    title: 'Exam',
+    title: 'Egzaminai',
     type: 'document',
     fields: [
         {
@@ -12,16 +12,6 @@ export default {
             },
         },
         {
-            name: 'sheet',
-            title: 'Lapas',
-            type: 'string',
-            options: {
-                layout: 'radio',
-                list: ['Atsakymai', 'Užduotys'],
-            },
-        },
-
-        {
             name: 'level',
             title: 'Lygis',
             type: 'string',
@@ -30,10 +20,9 @@ export default {
                 list: ['Valstybinis', 'Mokyklinis'],
             },
         },
-
         {
             name: 'session',
-            title: 'Užduotis',
+            title: 'Sesija',
             type: 'string',
             options: {
                 layout: 'radio',
@@ -45,8 +34,13 @@ export default {
             },
         },
         {
-            name: 'file',
-            title: 'Failas',
+            name: 'answers',
+            title: 'Atsakymai',
+            type: 'file',
+        },
+        {
+            name: 'questions',
+            title: 'Klausimai',
             type: 'file',
         },
         {
@@ -55,18 +49,26 @@ export default {
             type: 'string',
         },
     ],
+    orderings: [
+        {
+            title: 'Metai, Naujausi',
+            name: 'yearDesc',
+            by: [{ field: 'year', direction: 'desc' }],
+        },
+    ],
     preview: {
         select: {
-            sheet: 'sheet',
-            year: 'year',
+            metai: 'year',
             subject: 'subject',
+            level: 'level',
+            sesija: 'session',
         },
         prepare(selection = {}) {
-            const { sheet, subject, year } = selection;
+            const { sesija, metai, level } = selection;
             return Object.assign({}, selection, {
-                title: `${subject}: ${
-                    year.split('-')[0]
-                }  ${sheet.toLowerCase()}`,
+                title: `${metai.split('-')[0]} ${
+                    'Valstybinis' === level ? 'VBE' : 'MBE'
+                } ${sesija.split(' ')[0]}`,
             });
         },
     },

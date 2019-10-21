@@ -38,14 +38,15 @@ export default {
             of: [{ type: 'reference', to: { type: 'category' } }],
         },
         {
-            name: 'publishedAt',
-            title: 'Published at',
-            type: 'date',
-        },
-        {
             name: 'body',
             title: 'Body',
             type: 'blockContent',
+        },
+        {
+            name: 'views',
+            title: 'Article Views',
+            type: 'number',
+            readOnly: true,
         },
     ],
 

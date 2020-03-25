@@ -1,12 +1,6 @@
 const fs = require('fs');
-const sanityClient = require('@sanity/client');
-const client = sanityClient({
-    projectId: 'lv5ajubm',
-    dataset: 'production',
-    token:
-        'skPrEnnOq6Brcphaws3EwnL4EGs0RFqIsfsLISoIc32JJhVFm11xUNJ0sQzOh0pcrkOh016bLYa4KLTmGed8SYqN0tnRRZnXcNxj4C7HTZMgBOUFW3Q67dBcgSYKWqZDUM3SNnLKeu2yfCRV9cXXAfY9uRIoAADI2nhcdMqs9EniZNXjtZzM',
-    useCdn: false,
-});
+import client from './sanityClient';
+
 const toMarkdown = require('@sanity/block-content-to-markdown');
 // const blocksToHtml = require('@sanity/block-content-to-html')
 

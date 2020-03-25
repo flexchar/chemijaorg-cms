@@ -6,6 +6,7 @@ import schemaTypes from 'all:part:@sanity/base/schema-type';
 
 // We import object and document schemas
 import blockContent from './blockContent';
+import questionaire from './questionaire';
 import category from './category';
 import article from './article';
 import exam from './exam';
@@ -25,5 +26,6 @@ export default createSchema({
         // { type: 'typename' } in other document schemas
         blockContent,
         exam,
+        questionaire,
     ]),
 });

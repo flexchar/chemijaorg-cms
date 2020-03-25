@@ -9,6 +9,7 @@
     "scripts": {
         "m-exams": "sanity exec migrations/migrateExams.js --with-user-token",
         "m-articles": "sanity exec migrations/migrateArticles.js",
+        "m-questions": "sanity exec migrations/migrateQuestionaire.js",
         "serve": "sanity start",
         "test": "sanity check"
     },

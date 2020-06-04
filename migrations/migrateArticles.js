@@ -6,6 +6,7 @@ const encoding = require('encoding');
 const slugify = require('slugify');
 const blockTools = require('@sanity/block-tools');
 import schema from '../schemas/schema.js';
+const Entities = require('html-entities').AllHtmlEntities;
 
 // The compiled schema type for the content type that holds the block array
 const blockContentType = schema
@@ -38,6 +39,7 @@ const getCategory = catId => {
 // client.getDocument('09b01109-1914-43e8-a07f-5715f38d52ee').then(doc => {
 //     dd(doc);
 // });
+const TEST_ID = 23;
 
 function uploadArticle(entity) {
     const {
@@ -50,18 +52,30 @@ function uploadArticle(entity) {
     } = entity;
 
     const title = encoding
-        .convert(article_subject, 'utf-8', 'windows-1257')
+        .convert(Entities.decode(article_subject), 'utf-8', 'windows-1257')
         .toString();
     const body = encoding
         .convert(article_article, 'utf-8', 'windows-1257')
         .toString();
 
-    // Replace white space and dots with dashes to prevent trimming
-    const slug = slugify(title.replace(/[\s.]/g, '-'), {
-        remove: /[*+~.()'"!:@]/g,
-        lower: true,
-        strict: true,
-    });
+    const slug = slugify(
+        // Replace white space and dots with dashes to prevent trimming
+        title.trimLeft().replace(/[\s.]/g, '-'),
+        {
+            lower: true,
+            strict: true,
+        }
+    );
+    // const expected = `42-tirpalas-"praryjantis"-kalio-premanganato-tirpalo-spalva`; //155
+    // const expected = `02-violetiniai-dumai-lt`; //23
+    // const expected = `kai-kuriu-medziagu-ir-jonu-standartines-susidarymo-entalpijos-`; //158
+    // const expected = `44-reakcijos-kuriu-metu-susidaro-nuosedos-2-dal-`; //157
+    // console.table({
+    //     title,
+    //     slug,
+    //     expected,
+    //     isValid: slug === expected,
+    // });
 
     let bodyBlocks;
     try {
@@ -111,7 +125,9 @@ function uploadArticle(entity) {
             console.log(`Article migrated (#${res._id}) - ${data.title}`);
         })
         .catch(err =>
-            console.log(`Failed for article ${data.title}: ${err.toString()}`)
+            console.log(
+                `\Failed for article ${data.title}: ${err.toString()}\n`
+            )
         );
 }
 
@@ -124,7 +140,7 @@ db.serialize(async () => {
     });
 
     let aOffset = 0;
-    const aLimit = 30;
+    const aLimit = 20;
     const getSQL = (limit, offset) =>
         `SELECT * FROM plxasc5354zxpui_articles ORDER BY article_id ASC LIMIT ${limit} OFFSET ${offset}`;
 
@@ -142,8 +158,9 @@ db.serialize(async () => {
                         throw new Error(err);
                     }
 
-                    if (entity) {
+                    if (entity.article_id) {
                         uploadArticle(entity);
+                        // aOffset = 500;
                     }
                 },
                 (err, count) => {

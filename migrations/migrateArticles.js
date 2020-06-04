@@ -56,7 +56,12 @@ function uploadArticle(entity) {
         .convert(article_article, 'utf-8', 'windows-1257')
         .toString();
 
-    const slug = slugify(title, { remove: /[*+~.()'"!:@]/g, lower: true });
+    // Replace white space and dots with dashes to prevent trimming
+    const slug = slugify(title.replace(/[\s.]/g, '-'), {
+        remove: /[*+~.()'"!:@]/g,
+        lower: true,
+        strict: true,
+    });
 
     let bodyBlocks;
     try {
@@ -70,8 +75,8 @@ function uploadArticle(entity) {
 
     const data = {
         _type: 'article',
-        _id: article_id,
-        title,
+        _id: `imported-article-${article_id}`,
+        title: title.trim(),
         body: bodyBlocks,
         slug: {
             _type: 'slug',
@@ -89,33 +94,76 @@ function uploadArticle(entity) {
         views: parseInt(article_reads),
     };
 
+    // return console.log(`S: Article migrated (#${data._id}) - ${data.title}`);
+
     // Ready to publish
-    client.createOrReplace(data).then(res => {
-        console.log(`Article migrated, doc ID is ${res._id}`);
-    });
+    // client
+    //     .patch(article_id)
+    //     .set(data)
+    //     .commit()
+    //     .then(newObj => {
+    //         console.log(`Article patched!`, newObj);
+    //     });
+
+    client
+        .createOrReplace(data)
+        .then(res => {
+            console.log(`Article migrated (#${res._id}) - ${data.title}`);
+        })
+        .catch(err =>
+            console.log(`Failed for article ${data.title}: ${err.toString()}`)
+        );
 }
 
-let articlesCounter = 0;
-const articlesAmount = 30;
-const SQL = `SELECT * FROM plxasc5354zxpui_articles LIMIT ${articlesAmount} OFFSET ${articlesCounter}`;
-db.serialize(() => {
-    let iteratorState = true;
-    while (iteratorState) {
-        db.each(SQL, (err, entity) => {
-            if (err) {
-                console.error(err);
-                throw new Error(err);
-            }
+db.serialize(async () => {
+    const totalCount = await new Promise((res, rej) => {
+        db.get(
+            `SELECT COUNT(*) as total FROM plxasc5354zxpui_articles`,
+            (err, result) => res(result.total)
+        );
+    });
 
-            if (entity) {
-                uploadArticle(entity);
-            } else iteratorState = false;
-        });
+    let aOffset = 0;
+    const aLimit = 30;
+    const getSQL = (limit, offset) =>
+        `SELECT * FROM plxasc5354zxpui_articles ORDER BY article_id ASC LIMIT ${limit} OFFSET ${offset}`;
 
-        articlesCounter += articlesAmount;
+    while (true) {
+        console.info(
+            `\nDatabase iterator is at ${aOffset}-${aOffset + aLimit} \n`
+        );
 
-        console.info('Uploading articles, current counter' + articlesCounter);
+        await new Promise((resolve, reject) =>
+            db.each(
+                getSQL(aLimit, aOffset),
+                (err, entity) => {
+                    if (err) {
+                        console.error(err);
+                        throw new Error(err);
+                    }
+
+                    if (entity) {
+                        uploadArticle(entity);
+                    }
+                },
+                (err, count) => {
+                    if (err) reject(err);
+                    else resolve(count);
+                }
+            )
+        );
+
+        aOffset += aLimit;
+        if (aOffset >= totalCount) break;
+
+        await sleep(3000);
     }
+
+    db.close();
 });
 
-db.close();
+function sleep(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}

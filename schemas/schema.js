@@ -7,6 +7,7 @@ import schemaTypes from 'all:part:@sanity/base/schema-type';
 // We import object and document schemas
 import blockContent from './blockContent';
 import questionaire from './questionaire';
+import youtube from './blocks/youtube';
 import category from './category';
 import article from './article';
 import exam from './exam';
@@ -27,5 +28,6 @@ export default createSchema({
         blockContent,
         exam,
         questionaire,
+        youtube,
     ]),
 });

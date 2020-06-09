@@ -1,3 +1,9 @@
+import React from 'react';
+import { FaSubscript, FaSuperscript } from 'react-icons/lib/fa';
+
+const subRender = props => <sub>{props.children}</sub>;
+const supRender = props => <sup>{props.children}</sup>;
+
 /**
  * This is the schema definition for the rich text fields used for
  * for this blog studio. When you import it in schemas.js it can be
@@ -22,7 +28,7 @@ export default {
             // use your content.
             styles: [
                 { title: 'Normal', value: 'normal' },
-                { title: 'H1', value: 'h1' },
+                // { title: 'H1', value: 'h1' },eee
                 { title: 'H2', value: 'h2' },
                 { title: 'H3', value: 'h3' },
                 { title: 'H4', value: 'h4' },
@@ -43,8 +49,22 @@ export default {
                     { title: 'Code', value: 'code' },
                     { title: 'Underline', value: 'underline' },
                     { title: 'Strike', value: 'strike-through' },
-                    { title: 'Subscript', value: 'sub' },
-                    { title: 'Superscript', value: 'sup' },
+                    {
+                        title: 'Subscript',
+                        value: 'sub',
+                        blockEditor: {
+                            icon: FaSubscript,
+                            render: subRender,
+                        },
+                    },
+                    {
+                        title: 'Superscript',
+                        value: 'sup',
+                        blockEditor: {
+                            icon: FaSuperscript,
+                            render: supRender,
+                        },
+                    },
                 ],
                 // Annotations can be any object structure – e.g. a link or a footnote.
                 annotations: [
@@ -69,6 +89,9 @@ export default {
         {
             type: 'image',
             options: { hotspot: true },
+        },
+        {
+            type: 'youtube',
         },
     ],
 };

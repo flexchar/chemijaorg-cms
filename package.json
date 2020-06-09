@@ -11,7 +11,8 @@
         "m-articles": "sanity exec migrations/migrateArticles.js --with-user-token",
         "m-questions": "sanity exec migrations/migrateQuestionaire.js",
         "serve": "sanity start",
-        "test": "sanity check"
+        "test": "sanity check",
+        "deploy": "sanity deploy"
     },
     "dependencies": {
         "@sanity/base": "^1.149.15",

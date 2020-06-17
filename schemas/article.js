@@ -26,10 +26,9 @@ export default {
             },
         },
         {
-            name: 'legacy_urls',
-            title: 'Legacy Links',
-            type: 'array',
-            of: [{ type: 'string' }],
+            name: 'body',
+            title: 'Body',
+            type: 'blockContent',
         },
         {
             name: 'categories',
@@ -38,9 +37,10 @@ export default {
             of: [{ type: 'reference', to: { type: 'category' } }],
         },
         {
-            name: 'body',
-            title: 'Body',
-            type: 'blockContent',
+            name: 'legacy_urls',
+            title: 'Legacy Links',
+            type: 'array',
+            of: [{ type: 'string' }],
         },
         {
             name: 'views',

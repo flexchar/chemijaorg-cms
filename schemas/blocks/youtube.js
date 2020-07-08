@@ -16,7 +16,7 @@ export default {
             url: 'url',
         },
         component: ({ value }) => {
-            const { url } = value;
+            const { url = '' } = value;
             const id = (url.split('watch?v=')[1] || '').split('&')[0];
             return (
                 <iframe
@@ -25,7 +25,7 @@ export default {
                     width="100%"
                     height="480px"
                     src={`https://www.youtube.com/embed/${id}?modestbranding=1&rel=0`}
-                    frameborder="0"
+                    frameBorder="0"
                 ></iframe>
             );
         },

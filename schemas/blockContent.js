@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaSubscript, FaSuperscript } from 'react-icons/lib/fa';
+import { FaSubscript, FaSuperscript } from 'react-icons/fa';
 
 const subRender = props => <sub>{props.children}</sub>;
 const supRender = props => <sup>{props.children}</sup>;
@@ -92,6 +92,9 @@ export default {
         },
         {
             type: 'youtube',
+        },
+        {
+            type: 'table',
         },
     ],
 };

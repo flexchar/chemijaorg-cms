@@ -15,7 +15,8 @@
     "@sanity/desk-tool",
     "@sanity/vision",
     "media",
-    "asset-source-unsplash"
+    "asset-source-unsplash",
+    "table"
   ],
   "parts": [
     {
